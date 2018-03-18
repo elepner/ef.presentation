@@ -23,13 +23,13 @@
 \date{April 2018}
 % Optionnel. La date, généralement celle du jour de la conférence
 
-\subject{Sujet de votre diaporama}
-% C'est utilisé dans les métadonnes du PDF
+\subject{EF Core: Tips and Tricks}
+% Goes to PDF Metadata
 
-
+ 
 
 \logo{
-\includegraphics[scale=0.15]{images/logo.jpg}
+\includegraphics[scale=0.10]{images/logo.jpg}
 }
 
 
@@ -45,9 +45,9 @@
 
 
 
-\begin{frame}{Table of contents}
-  \tableofcontents
-\end{frame}
+% \begin{frame}{Table of contents}
+%   \tableofcontents
+% \end{frame}
 
 
 
@@ -108,6 +108,42 @@ Orange  & 60.00   & 90.00   & 120.00
 \end{columns}
 \end{frame}
 
+
+\begin{frame} {About Entity Framework}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            Queries\\[.2cm]
+            \begin{enumerate}
+                \item Queries (Where clauses, Take, Skip, OrderBy)
+                \item Projections (Select statement)
+                \item Aggregate (Min, Max, GroupBy)
+            \end{enumerate}
+            \onslide<2->{
+                \begin{itemize}
+                    \item Expression analysis
+                    \item Expression translations
+                    \item SQL Builder
+                \end{itemize}
+            }
+            
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            Commands\\[.2cm]
+            \begin{enumerate}
+                \item Create
+                \item Read
+                \item Update
+                \item Delete
+            \end{enumerate}
+            \onslide<3->{
+                    \begin{itemize}
+                        \item Dynamic Proxies
+                        \item Changes Detection (Object graph tracking)
+                    \end{itemize}
+                }
+        \end{column}
+    \end{columns}
+\end{frame}
 
 
 
@@ -190,35 +226,35 @@ une boite grise
 
 
 \section{Les listes}
-	\subsection{Liste à item}
+    \subsection{Liste à item}
 
 \begin{frame}{Titre de la frame}
 
-	\begin{itemize}
-		\item premier élément de liste,
-		\item deuxième élément de liste,
-		\item troisième élément de liste.
-	\end{itemize}
+    \begin{itemize}
+        \item premier élément de liste,
+        \item deuxième élément de liste,
+        \item troisième élément de liste.
+    \end{itemize}
 \end{frame} 
 
-		\subsection{Liste énumérative} 
+        \subsection{Liste énumérative} 
 \begin{frame}{Titre de la frame} 
-	\begin{enumerate}
-		\item élément de liste numéro 1,
-		\item élément de liste numéro 2,
-		\item élément de liste numéro 3.  
-	\end{enumerate}
+    \begin{enumerate}
+        \item élément de liste numéro 1,
+        \item élément de liste numéro 2,
+        \item élément de liste numéro 3.  
+    \end{enumerate}
 \end{frame}
 
 
-		\subsection{Liste descriptive} 
+        \subsection{Liste descriptive} 
 \begin{frame}{Titre de la frame} 
-	\begin{description}
-		\item [Thème de présentation : ] ces thèmes sont en fait...
-		\item [Thème de couleur : ] gère tout ce qui est couleur...
-		\item [Thème de police : ] s'occupe de tout ce qui est police, gras...
-		\item [Thème interne : ] s'occupe de l'apparence des éléments...
-	\end{description}
+    \begin{description}
+        \item [Thème de présentation : ] ces thèmes sont en fait...
+        \item [Thème de couleur : ] gère tout ce qui est couleur...
+        \item [Thème de police : ] s'occupe de tout ce qui est police, gras...
+        \item [Thème interne : ] s'occupe de l'apparence des éléments...
+    \end{description}
 \end{frame}
 
 

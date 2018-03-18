@@ -1,27 +1,6 @@
 
 \documentclass{bredelebeamer}
-
-\usepackage[T1]{fontenc}
-\usepackage[scaled]{beramono}
-
-\usepackage{color}
-\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
-\definecolor{greencomments}{rgb}{0,0.5,0}
-\definecolor{redstrings}{rgb}{0.9,0,0}
-
-\usepackage{listings}
-\lstset{language=[Sharp]C,
-showspaces=false,
-showtabs=false,
-breaklines=true,
-showstringspaces=false,
-breakatwhitespace=true,
-escapeinside={(*@}{@*)},
-commentstyle=\color{greencomments},
-keywordstyle=\color{bluekeywords}\bfseries,
-stringstyle=\color{redstrings},
-basicstyle=\ttfamily
-}
+\input{cslistings.tex}
 
 \title[EFC Tips \& Tricks]{Entity Framework Core: Tips and Tricks}
 
@@ -121,22 +100,65 @@ basicstyle=\ttfamily
     \end{alertblock}
 \end{frame}
 
-\begin{frame}[containsverbatim]{Example}
+\begin{frame}[fragile]{Example}
     \begin{lstlisting}
-/**
-* Prints Hello World.
-**/
-class Program
-{
-    public static void Main()
-    {
-        System.Console.WriteLine("Hello World!");
-    }
-}
+var query = dbContext.Posts
+    .Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10)
+    .Select(x => new { x.Id, x.Title, x.Content })
+    \end{lstlisting}
+    \pause
+    \begin{lstlisting}
+var query2 = Queryable.Select(
+    Queryable.Where(
+        dbContext.Posts, x => x.Content.StartsWith("Some") || x.Title.Length > 10),
+    x => new { x.Id, x.Title, x.Content })
     \end{lstlisting}
 \end{frame}
 
-
+\begin{frame}[fragile]{Example}
+    \begin{onlyenv}<1>
+        \begin{lstlisting}
+        var query = from ac in _context.AddressConnection
+            join cp in _context.ConsumptionPlace on ac.AddressObjectID equals cp.Id
+            join cc in _context.CustomerConnection on cp.Id equals cc.CustomerObjectID
+            join cu in _context.Customer on cc.CustomerID equals cu.Id
+            where ac.AddressObjectTable == nameof(ConsumptionPlace) && ac.AddressID == id &&
+            cc.CustomerObjectTable == nameof(ConsumptionPlace) && cc.CustomerRoleCode == CustomerRoleCodes.Consumer
+            select new ViewModels.ConsumptionPlacePanelView
+            {
+                Id = cp.Id,
+                Name = cu.Name
+            };
+        \end{lstlisting}
+    \end{onlyenv}
+    \begin{onlyenv}<2>
+        \begin{lstlisting}
+        var query = _context.AddressConnection
+            .Join(_context.ConsumptionPlace, ac => ac.AddressObjectID, cp => cp.Id, (ac, cp) => new {ac, cp})
+            .Join(_context.CustomerConnection, t => t.cp.Id, cc => cc.CustomerObjectID, (t, cc) => new {t, cc})
+            .Join(_context.Customer, t => t.cc.CustomerID, cu => cu.Id, (t, cu) => new {t, cu})
+            .Where(t => t.t.t.ac.AddressObjectTable == nameof(ConsumptionPlace) && t.t.t.ac.AddressID == id &&
+                         t.t.cc.CustomerObjectTable == nameof(ConsumptionPlace) &&
+                         t.t.cc.CustomerRoleCode == CustomerRoleCodes.Consumer)
+            .Select(t => new ViewModels.ConsumptionPlacePanelView {Id = t.t.t.cp.Id, Name = t.cu.Name});
+        \end{lstlisting}
+    \end{onlyenv}
+\end{frame}
+\begin{frame}{IEnumerable<T> vs IQueryble<T>}
+    \lstinline{DbSet<T>} implements both \lstinline{IEnumerable<T>} and \lstinline{IQueryble<T>}.
+    How does it know which \lstinline{Select, Where, FirstOrDefault} to use?
+    \pause
+    \begin{exampleblock}{7.5.3.5 Better conversion target}
+        Given two different types T1 and T2, T1 is a better conversion target than T2 if at least one of the following holds:
+        \begin{itemize}
+            \item An implicit conversion from T1 to T2 exists, and no implicit conversion from T2 toT1 exists
+            \item T1 is a signed integral type and T2 is an unsigned integral type.
+        \end{itemize}
+    \end{exampleblock}
+    \begin{exampleblock}{Lambda Expressions}
+        A lambda expression is an anonymous function that you can use to create delegates or expression tree types. By using lambda expressions, you can write local functions that can be passed as arguments or returned as the value of function calls.
+    \end{exampleblock}
+\end{frame}
 
 
 \section{Les blocs}

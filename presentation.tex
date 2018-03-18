@@ -1,7 +1,7 @@
 
 \documentclass{bredelebeamer}
 \input{cslistings.tex}
-
+\usepackage{tikz}
 \title[EFC Tips \& Tricks]{Entity Framework Core: Tips and Tricks}
 
 % \subtitle{Some subtitle}
@@ -30,10 +30,6 @@
   \titlepage
 \end{frame}
 
-
-
-
-
 % \begin{frame}{Table of contents}
 %   \tableofcontents
 % \end{frame}
@@ -41,7 +37,7 @@
 
 
 
-\section{Level Easy}
+\section{Theory}
 
 
 
@@ -100,7 +96,7 @@
     \end{alertblock}
 \end{frame}
 
-\begin{frame}[fragile]{Example}
+\begin{frame}[fragile]{Simple State}
     \begin{lstlisting}
 var query = dbContext.Posts
     .Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10)
@@ -115,7 +111,7 @@ var query2 = Queryable.Select(
     \end{lstlisting}
 \end{frame}
 
-\begin{frame}[fragile]{Example}
+\begin{frame}[fragile]{C\# Syntax Sugar}
     \begin{onlyenv}<1>
         \begin{lstlisting}
         var query = from ac in _context.AddressConnection
@@ -160,6 +156,12 @@ var query2 = Queryable.Select(
     \end{exampleblock}
 \end{frame}
 
+\begin{frame}[fragile]{Expression Parsing}
+    \begin{lstlisting}
+dbContext.Posts.Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10).Select(x => new { x.Id, x.Title, x.Content })
+    \end{lstlisting}
+    \includegraphics[height=0.7\textheight]{images/tree.pdf}
+\end{frame}
 
 \section{Les blocs}
 

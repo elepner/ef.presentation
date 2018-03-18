@@ -39,8 +39,6 @@
 
 \section{Theory}
 
-
-
 \begin{frame} {About Entity Framework}
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
@@ -161,6 +159,29 @@ var query2 = Queryable.Select(
 dbContext.Posts.Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10).Select(x => new { x.Id, x.Title, x.Content })
     \end{lstlisting}
     \includegraphics[height=0.7\textheight]{images/tree.pdf}
+\end{frame}
+
+\begin{frame}[fragile]{Conclusions}
+    \begin{itemize}
+        \item<1-> EF is not magic
+        \item<2-> One can pass around Query object append/modify it's nodes (aka Where/Select/OrderBy)
+        \item<3-> { This code is not equivalent
+        \begin{columns}
+            \begin{column}{0.5\textwidth}
+                \begin{lstlisting}
+new Clazz{A = "A", B = "B"}
+                \end{lstlisting}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \begin{lstlisting}
+var c = new Clazz();
+c.A = "A";
+c.B = "B";
+                \end{lstlisting}
+            \end{column}
+        \end{columns}
+        }
+    \end{itemize}
 \end{frame}
 
 \section{Les blocs}

@@ -1,17 +1,33 @@
 
 \documentclass{bredelebeamer}
 
+\usepackage[T1]{fontenc}
+\usepackage[scaled]{beramono}
 
+\usepackage{color}
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+\usepackage{listings}
+\lstset{language=[Sharp]C,
+showspaces=false,
+showtabs=false,
+breaklines=true,
+showstringspaces=false,
+breakatwhitespace=true,
+escapeinside={(*@}{@*)},
+commentstyle=\color{greencomments},
+keywordstyle=\color{bluekeywords}\bfseries,
+stringstyle=\color{redstrings},
+basicstyle=\ttfamily
+}
 
 \title[EFC Tips \& Tricks]{Entity Framework Core: Tips and Tricks}
 
 % \subtitle{Some subtitle}
 
 \author{Eduard Lepner\inst{1}}
-% La commande \inst{...} Permet d'afficher l' affiliation de l'intervenant.
-% Si il y a plusieurs intervenants: Marcel Dupont\inst{1}, Roger Durand\inst{2}
-% Il suffit alors d'ajouter un autre institut sur le modèle ci-dessous.
-
 \institute[Powel]
 {
   \inst{1}%
@@ -21,20 +37,14 @@
 
 
 \date{April 2018}
-% Optionnel. La date, généralement celle du jour de la conférence
 
 \subject{EF Core: Tips and Tricks}
 % Goes to PDF Metadata
-
- 
 
 \logo{
 \includegraphics[scale=0.10]{images/logo.jpg}
 }
 
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 
 \begin{frame}
@@ -54,59 +64,6 @@
 
 \section{Level Easy}
 
-\begin{frame}{Projectios}
-Texte normal \alert{Texte Alert}  \exemple{Texte exemple} \emph{Texte emphase}
-
-\begin{columns}
-
-\begin{column}{0.5\textwidth}
-\begin{block}{Bloc simple}
-\begin{itemize}
-\item Premier point
-\end{itemize}
-\end{block}
-
-\begin{exampleblock}{Bloc exemple}
-\begin{itemize}
-\item Premier point
-\end{itemize}
-\end{exampleblock}
-
-\begin{alertblock}{Bloc alert}
-\begin{itemize}
-\item Premier point
-\end{itemize}
-\end{alertblock}
-
-\end{column}
-
-\begin{column}{0.5\textwidth}
-\boiteviolette{
-Une boite violette
-}
-
-\boiteorange{
-Une boite orange
-}
-
-\boitegrise{
-Une boite grise
-}
-
-
-
-\begin{tcolorbox}[tabvert,tabularx={X||Y|Y|Y|Y||Y}, boxrule=0.5pt, title=Mon tableau des prix]
-Couleur & Prix 1  & Prix 2  & Prix 3 \\\hline\hline
-Rouge   & 10.00   & 20.00   &  30.00 \\\hline
-Vert    & 20.00   & 30.00   &  40.00  \\\hline
-Bleu    & 30.00   & 40.00   &  50.00 \\\hline\hline
-Orange  & 60.00   & 90.00   & 120.00 
-\end{tcolorbox}
-
-\end{column}
-
-\end{columns}
-\end{frame}
 
 
 \begin{frame} {About Entity Framework}
@@ -145,6 +102,41 @@ Orange  & 60.00   & 90.00   & 120.00
     \end{columns}
 \end{frame}
 
+\begin{frame}{Expression Trees}
+    \begin{block}{Any valid OO, Procedural, Declarative or Functional code}
+        can be translated to an Abstract Syntax Tree (AST)...
+        \pause  ... aaaand vice versa
+    \end{block}
+    \pause
+    \begin{block}{AST}
+        is a language indepent abstraction \pause (that's why FP is cool)
+    \end{block}
+    \pause
+    \begin{block}{Expression Tree}
+        is an AST. Expression yields one value and AST may represent entire program
+    \end{block}
+    
+    \begin{alertblock}{Bingo!}
+        Language A $\Rightarrow$ AST $\Rightarrow$ Language B
+    \end{alertblock}
+\end{frame}
+
+\begin{frame}[containsverbatim]{Example}
+    \begin{lstlisting}
+/**
+* Prints Hello World.
+**/
+class Program
+{
+    public static void Main()
+    {
+        System.Console.WriteLine("Hello World!");
+    }
+}
+    \end{lstlisting}
+\end{frame}
+
+
 
 
 \section{Les blocs}
@@ -155,7 +147,6 @@ Orange  & 60.00   & 90.00   & 120.00
 \begin{itemize}
 \item Premier point
 \item Second point
-\item Troisième point
 \end{itemize}
 \end{block}
 
@@ -163,7 +154,6 @@ Orange  & 60.00   & 90.00   & 120.00
 \begin{itemize}
 \item Premier point
 \item Second point
-\item Troisième point
 \end{itemize}
 \end{exampleblock}
 
@@ -171,7 +161,6 @@ Orange  & 60.00   & 90.00   & 120.00
 \begin{itemize}
 \item Premier point
 \item Second point
-\item Troisième point
 \end{itemize}
 \end{alertblock}
 \end{frame}
@@ -223,39 +212,6 @@ une boite grise
 
 \end{frame}
 
-
-
-\section{Les listes}
-    \subsection{Liste à item}
-
-\begin{frame}{Titre de la frame}
-
-    \begin{itemize}
-        \item premier élément de liste,
-        \item deuxième élément de liste,
-        \item troisième élément de liste.
-    \end{itemize}
-\end{frame} 
-
-        \subsection{Liste énumérative} 
-\begin{frame}{Titre de la frame} 
-    \begin{enumerate}
-        \item élément de liste numéro 1,
-        \item élément de liste numéro 2,
-        \item élément de liste numéro 3.  
-    \end{enumerate}
-\end{frame}
-
-
-        \subsection{Liste descriptive} 
-\begin{frame}{Titre de la frame} 
-    \begin{description}
-        \item [Thème de présentation : ] ces thèmes sont en fait...
-        \item [Thème de couleur : ] gère tout ce qui est couleur...
-        \item [Thème de police : ] s'occupe de tout ce qui est police, gras...
-        \item [Thème interne : ] s'occupe de l'apparence des éléments...
-    \end{description}
-\end{frame}
 
 
 
@@ -330,7 +286,7 @@ Orange  & 60.00   & 90.00   & 120.00   & 150.00   & 420.00
 \begin{figure}
 \centering
 
-\caption{Éléments d'architecture bretonne typique du Sud de la France. (\href{http://commons.wikimedia.org/wiki/File:Colmar_-_Alsace.jpg}{Wikipédia.fr} CC-By-Sa)}
+% \caption{Éléments d'architecture bretonne typique du Sud de la France. (\href{http://commons.wikimedia.org/wiki/File:Colmar_-_Alsace.jpg}{Wikipédia.fr} CC-By-Sa)}
 \end{figure}
 
 \end{frame}

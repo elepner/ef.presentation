@@ -1,16 +1,149 @@
-\begin{tikzpicture}[sibling distance=10em,
-    every node/.style = {shape=rectangle, rounded corners,
-      draw, align=center,
-      top color=white, bottom color=blue!20}]]
-    \node {Select}
-        % child { node {single-line} }
-        child { node {Queryable.Where}
-        child { node {aligned at}
-            child { node {relation sign} }
-            child { node {several places} }
-            child { node {center} } }
-        child { node {first left,\\centered,\\last right} } }
-        child {node {Member Init}
-            child { node {new AC} }
-            child { node {members} } };
+\begin{tikzpicture}[
+    keyword/.style={rectangle, draw=none, rounded corners=1mm, fill=blue, drop shadow,
+        text centered, anchor=north, text=white},
+    boolean/.style={circle, draw=none, fill=orange, circular drop shadow,
+        text centered, anchor=north, text=white},
+    leaf/.style={circle, draw=none, fill=red, circular drop shadow,
+        text centered, anchor=north, text=white},
+    level distance=0.1cm, growth parent anchor=south
+]
+\node (Select) [keyword] {Select} [->]
+    child{ [sibling distance=7cm]
+        node (State01) [boolean] {$S_{01}$}
+        child{
+            node (Fact02) [keyword] {$T_{02}$}
+            child{ [sibling distance=4cm]
+                node (State02) [boolean] {$S_{02}$}
+                child{
+                    node (Fact03) [keyword] {$T_{03}$}
+                    child{
+                        node (State03) [leaf] {$S_{03}$}
+                    }
+                }
+                child{
+                    node (Fact04) [keyword] {$T_{04}$}
+                    child{ [sibling distance=1.2cm]
+                        node (State04) [boolean] {$S_{04}$}
+                        child{
+                            node (Fact05) [keyword] {$T_{05}$}
+                            child{
+                                node (State05) [leaf] {$S_{05}$}
+                            }
+                        }
+                        child{
+                            node (Fact06) [keyword] {$T_{06}$}
+                            child{
+                                node (State06) [leaf] {$S_{06}$}
+                            }
+                        }
+                        child{
+                            node (Fact07) [keyword] {$T_{07}$}
+                            child{
+                                node (State07) [leaf] {$S_{07}$}
+                            }
+                        }
+                        child{
+                            node (Fact08) [keyword] {$T_{08}$}
+                            child{
+                                node (State08) [leaf] {$S_{08}$}
+                            }
+                        }
+                        child{
+                            node (Fact09) [keyword] {$T_{09.0}$}
+                            child{
+                                node (Fact09-1) [keyword] {$T_{09.1}$}
+                                child{
+                                    node (State09) [leaf] {$S_{09}$}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        child{ [sibling distance=4cm]
+            node (Fact10) [keyword] {$T_{10}$}
+            child{
+                node (State10) [boolean] {$S_{10}$}
+                child{
+                    node (Fact11) [keyword] {$T_{11}$}
+                    child{
+                        node (State11) [leaf] {$S_{11}$}
+                    }
+                }
+                child{
+                    node (Fact12) [keyword] {$T_{12}$}
+                    child{
+                        node (State12) [boolean] {$S_{12}$}
+                        child{
+                            node (Fact13) [keyword] {$T_{13}$}
+                            child{
+                                node (State13) [leaf] {$S_{13}$}
+                            }
+                        }
+                        child{
+                            node (Fact14) [keyword] {$T_{14}$}
+                            child{ [sibling distance=3cm]
+                                node (State14) [boolean] {$S_{14}$}
+                                child{
+                                    node (Fact15) [keyword] {$T_{15}$}
+                                    child{
+                                        node (State15) [leaf] {$S_{15}$}
+                                    }
+                                }
+                                child{
+                                    node (Fact16) [keyword] {$T_{16}$}
+                                    child{
+                                        node (State16) [leaf] {$S_{16}$}
+                                    }
+                                }
+                                child{
+                                    node (Fact17) [keyword] {$T_{17}$}
+                                    child{ [sibling distance=1.2cm]
+                                        node (State17) [boolean] {$S_{17}$}
+                                        child{
+                                            node (Fact18) [keyword] {$T_{18}$}
+                                            child{
+                                                node (State18) [leaf] {$S_{18}$}
+                                            }
+                                        }
+                                        child{
+                                            node (Fact19) [keyword] {$T_{19}$}
+                                            child{
+                                                node (State19) [leaf] {$S_{19}$}
+                                            }
+                                        }
+                                        child{
+                                            node (Fact20) [keyword] {$T_{20}$}
+                                            child{
+                                                node (State20) [leaf] {$S_{20}$}
+                                            }
+                                        }
+                                        child{
+                                            node (Fact21) [keyword] {$T_{21}$}
+                                            child{
+                                                node (State21) [leaf] {$S_{21}$}
+                                            }
+                                        }
+                                        child{
+                                            node (Fact22) [keyword] {$T_{22.0}$}
+                                            child{
+                                                node (Fact22-1) [keyword] {$T_{22.1}$}
+                                                child{
+                                                    node (State22) [leaf] {$S_{22}$}
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+;
+        
 \end{tikzpicture}

@@ -1,7 +1,8 @@
-
 \documentclass{bredelebeamer}
 \input{cslistings.tex}
+\usepackage{geometry}
 \usepackage{tikz}
+\usetikzlibrary{positioning,shadows,arrows}
 \title[EFC Tips \& Tricks]{Entity Framework Core: Tips and Tricks}
 
 % \subtitle{Some subtitle}
@@ -158,7 +159,7 @@ var query2 = Queryable.Select(
     \begin{lstlisting}
 dbContext.Posts.Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10).Select(x => new { x.Id, x.Title, x.Content })
     \end{lstlisting}
-    \includegraphics[height=0.7\textheight]{images/tree.pdf}
+    \input{expression_tree.tex}
 \end{frame}
 
 \begin{frame}[fragile]{Conclusions}
@@ -247,6 +248,12 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
     \begin{exampleblock}{}
         True
     \end{exampleblock}
+\end{frame}
+
+\begin{frame}{What if I Don't Want To Track}
+    \begin{exampleblock}{}
+        Use AsNoTracking() method
+    \end{exampleblock}{}
 \end{frame}
 
 \section{Medium Level}

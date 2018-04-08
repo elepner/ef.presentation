@@ -2,6 +2,7 @@
 \input{cslistings.tex}
 \usepackage{geometry}
 \usepackage{tikz}
+\newcommand{\imagefolder}{../EF.Experiments/EF.Experiments.Data/Specifications/Specification.cs}
 \tikzset{
     invisible/.style={opacity=0},
     visible on/.style={alt={#1{}{invisible}}},
@@ -39,15 +40,11 @@
   \titlepage
 \end{frame}
 
-% \begin{frame}{Table of contents}
-%   \tableofcontents
-% \end{frame}
-
-
-
+\begin{frame}{Overview}
+  \tableofcontents
+\end{frame}
 
 \section{Theory}
-
 \begin{frame} {About Entity Framework}
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
@@ -83,7 +80,7 @@
         \end{column}
     \end{columns}
 \end{frame}
-
+% \subsection{Expression and Abstract Syntax Trees}
 \begin{frame}{Expression Trees}
     \begin{block}{Any valid OO, Procedural, Declarative or Functional code}
         can be translated to an Abstract Syntax Tree (AST)...
@@ -195,7 +192,7 @@ c.B = "B";
 
 \section{Level Easy}
 
-\begin{frame}{Projectsion (ViewModels)}
+\begin{frame}{Projection (ViewModels)}
     \begin{onlyenv}<1>
         \lstinputlisting{resources/model.cs}
     \end{onlyenv}
@@ -328,11 +325,48 @@ context.Posts.Where(new LastPosts(10).ToExpression())
             Chaining with boolean operators?
             \begin{lstlisting}
     ctx.Posts.ToArray().Where(
-        new LastPosts(10) && new FromBlog(blogId) && (new ByAuthor(john) || new ByAuthor(Grzegosz))
+        new LastPosts(10) && new FromBlog(blogId) &&
+            (new ByAuthor(john) || new ByAuthor(Grzegosz))
         )
             \end{lstlisting}
         }
     \end{itemize}
+
+\end{frame}
+\begin{frame}{Can we achieve this with C\#?}
+    \pause
+    \begin{center}
+        \huge What if I told you it was possible?
+        \includegraphics[scale=0.45]{images/whatifitoldyou.jpg}
+    \end{center}
+\end{frame}
+% \def\spec_file_path {../EF.Experiments/EF.Experiments.Data/Specifications/Specification.cs}
+
+\begin{frame}[fragile]{Reaching our Goal With Specification Pattern}
+    \begin{itemize}[<+->]
+        \item {
+            No Explicit ToExpression() calls/Casts - operator overloading
+        }
+        \item {
+            Linq To Enities
+        }
+        \item {
+            Chaining with boolean operators
+        }
+    \end{itemize}
+    \only<1> {
+        \lstinputlisting[firstline=37, lastline=40]{\imagefolder}
+    }
+    \only<2> {
+        \lstinputlisting[firstline=10, lastline=11]{\imagefolder}
+        \lstinputlisting[firstline=32, lastline=35]{\imagefolder}
+    }
+    \only<3> {
+        \begin{exampleblock}{\href{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/expressions\#boolean-expressions}{Boolean operator overloading}}
+            In order to overloading operators \&\&, ||, ! one should overload operators true, false, \&, |
+        \end{exampleblock}
+        CODE DEMO!
+    }
 
 \end{frame}
 \end{document}

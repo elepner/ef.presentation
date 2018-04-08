@@ -1,61 +1,59 @@
 \begin{tikzpicture}[
-    func/.style={rectangle, draw=none, rounded corners=1mm, fill=blue, drop shadow,
+    func/.style={rectangle, draw=none, rounded corners=1mm, fill=blue,
         text centered, anchor=north, text=white},
-    operator/.style={circle, draw=none, fill=orange, circular drop shadow,
+    operator/.style={circle, draw=none, fill=orange,
         text centered, anchor=north, text=white},
-    leaf/.style={rectangle, draw=none, rounded corners=1mm, fill=red, drop shadow,
+    leaf/.style={rectangle, draw=none, rounded corners=1mm, fill=red,
     text centered, anchor=north, text=white},
     level distance=0.3cm, growth parent anchor=south
 ]
 \node (Select) [func] {Select} [->] [sibling distance=5cm]
     
-        child{
+        child[visible on=<2->]{
             node (Where) [func]{Where}[sibling distance=2cm]
-            child{
+            child[visible on=<3->]{
                 node (Posts) [leaf] {Posts}
             }
-            child{
+            child[visible on=<4->]{
                 node (OR) [operator] {OR}[sibling distance=4cm]
-                child {
+                child[visible on=<5->]{
                     node (State03) [func] {String.StartsWith}
-                    child {
+                    child[visible on=<6->]{
                         node(Prop)[leaf]{Property:Content}
                     }
-                    child {
+                    child[visible on=<7->]{
                         node(Prop)[leaf]{"Some"}
                     }
                 }
-                child {
+                child[visible on=<8->]{
                     node (Gr) [operator] {>}[level distance=1cm, sibling distance=1.5cm]
-                    child {
+                    child[visible on=<9->]{
                         node(Prop)[leaf]{Property:Title}
                     }
-                    child {
+                    child[visible on=<10->]{
                         node(Prop)[leaf]{10}
                     }
                 }
             }
         }
-        child{
+        child[visible on=<11->]{
             node (MemberInit) [func] {Member Init} [sibling distance=2cm]
-            child{
+            child[visible on=<12->]{
                 node (State22) [leaf][text width=1.5cm] {New Anonymous Class}
             }
-            child{
-                node (State22) [func] {Members List}[sibling distance=1.1cm, level distance=1.2cm]
-                child{
+            child[visible on=<13->]{
+                node (State22) [func] {Members Binding List}[sibling distance=1.1cm, level distance=1.2cm]
+                child[visible on=<14->]{
                     node(id)[leaf]{Id}
                 }
-                child{
+                child[visible on=<15->]{
                     node(title)[leaf]{Title}
                 }
-                child{
+                child[visible on=<16->]{
                     node(content)[leaf]{Content}
                 }
             }
         }
-    
-    
 ;
         
 \end{tikzpicture}

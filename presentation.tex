@@ -2,6 +2,14 @@
 \input{cslistings.tex}
 \usepackage{geometry}
 \usepackage{tikz}
+\tikzset{
+    invisible/.style={opacity=0},
+    visible on/.style={alt={#1{}{invisible}}},
+    alt/.code args={<#1>#2#3}{%
+      \alt<#1>{\pgfkeysalso{#2}}{\pgfkeysalso{#3}} % \pgfkeysalso doesn't change the path
+    },
+}
+
 \usetikzlibrary{positioning,shadows,arrows}
 \title[EFC Tips \& Tricks]{Entity Framework Core: Tips and Tricks}
 
@@ -16,7 +24,7 @@
   }
 
 
-\date{April 2018}
+\date{12 April 2018}
 
 \subject{EF Core: Tips and Tricks}
 % Goes to PDF Metadata
@@ -237,13 +245,13 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
 \end{frame}
 
 \begin{frame}{C\# Triggers}
-    \lstinputlisting[firstline=44, lastline=56]{../EF.Experiments/EF.Experiments.Data/BloggingContext.cs}
+    \lstinputlisting[firstline=47, lastline=59]{../EF.Experiments/EF.Experiments.Data/BloggingContext.cs}
     \pause
     Don't forget to override Async verion of SaveChanges on EF Core.
+
 \end{frame}
 \begin{frame}{Object Tracking}
     \lstinputlisting[firstline=29, lastline=31]{../EF.Experiments/EF.Experiments/Program.cs}
-
     \pause
     \begin{exampleblock}{}
         True
@@ -257,8 +265,74 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
 \end{frame}
 
 \section{Medium Level}
-\begin{frame}{Pattern Specification}
-    
+\begin{frame}{Tracking N+1 Problem}
+    \begin{alertblock}{N+1 Fallback}
+        Unlike EF6, if EFC cannot translate expression it will execute it on client.
+    \end{alertblock}
+    \pause
+    \begin{exampleblock}{Treat Warnings as Errors}
+        optionsBuilder\\
+                .UseSqlServer(...)\\
+                .ConfigureWarnings(wartings => wartings.Throw());
+    \end{exampleblock}
 \end{frame}
 
+\begin{frame}[fragile]{Pattern Specification}
+    \begin{exampleblock}{Specification}
+        In computer programming, the specification pattern is a particular software design pattern, whereby business rules can be recombined by chaining the business rules together using boolean logic. 
+    \end{exampleblock}
+    \pause
+    \begin{lstlisting}
+        public interface ISpecification<T>
+        {
+            bool IsSatisfiedBy(T entity);
+    \end{lstlisting}
+    \pause
+    \begin{lstlisting}
+            Expression<Func<T, bool>> ToExpression();
+        }
+    \end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Now We Can}
+    \lstinputlisting[firstline=8, lastline=21]{../EF.Experiments/EF.Experiments.Data/Specifications/Implementations/Implementations.cs}
+\end{frame}
+
+\begin{frame}[fragile]{Now We Can}
+    \begin{lstlisting}
+context.Posts.Where(new LastPosts(10).ToExpression())
+    \end{lstlisting}
+    \begin{itemize}
+        \item{Testable}
+        \item{Incapsulate Business logic}
+    \end{itemize}
+\end{frame}
+\section{Advanced}
+\begin{frame}{But Specification Pattern says they should be capable of chaining}
+    \includegraphics[scale=0.8]{images/But.png}
+\end{frame}
+\begin{frame}[fragile]{Goal}
+    \begin{itemize}[<+->]
+        \item {
+            No Explicit ToExpression() calls/Casts
+            \begin{lstlisting}
+    ctx.Posts.Where(new LastPosts(10))
+            \end{lstlisting}
+        }
+        \item {
+            Linq To Enities
+            \begin{lstlisting}
+    ctx.Posts.ToArray().Where(new LastPosts(10))
+            \end{lstlisting}
+        }
+        \item {
+            Chaining with boolean operators?
+            \begin{lstlisting}
+    ctx.Posts.ToArray().Where(
+        new LastPosts(10) && new FromBlog(blogId) && (new ByAuthor(john) || new ByAuthor(Grzegosz))
+        )
+            \end{lstlisting}
+        }
+    \end{itemize}
+
+\end{frame}
 \end{document}

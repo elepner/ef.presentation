@@ -40,11 +40,12 @@
   \titlepage
 \end{frame}
 
-\begin{frame}{Overview}
+\begin{frame}{Agenda}
   \tableofcontents
 \end{frame}
 
 \section{Theory}
+\subsection{EF Basic Primitives}
 \begin{frame} {About Entity Framework}
     \begin{columns}[t]
         \begin{column}{0.5\textwidth}
@@ -80,7 +81,7 @@
         \end{column}
     \end{columns}
 \end{frame}
-% \subsection{Expression and Abstract Syntax Trees}
+\subsection{Expression and Abstract Syntax Trees}
 \begin{frame}{Expression Trees}
     \begin{block}{Any valid OO, Procedural, Declarative or Functional code}
         can be translated to an Abstract Syntax Tree (AST)...
@@ -99,7 +100,7 @@
         Language A $\Rightarrow$ AST $\Rightarrow$ Language B
     \end{alertblock}
 \end{frame}
-
+\subsection{C\# Language Primitives and Syntax Sugar}
 \begin{frame}[fragile]{Simple State}
     \begin{lstlisting}
 var query = dbContext.Posts
@@ -159,7 +160,7 @@ var query2 = Queryable.Select(
         A lambda expression is an anonymous function that you can use to create delegates or expression tree types. By using lambda expressions, you can write local functions that can be passed as arguments or returned as the value of function calls.
     \end{exampleblock}
 \end{frame}
-
+\subsection{Expression Parsing}
 \begin{frame}[fragile]{Expression Parsing}
     \begin{lstlisting}
 dbContext.Posts.Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10).Select(x => new { x.Id, x.Title, x.Content })
@@ -191,7 +192,7 @@ c.B = "B";
 \end{frame}
 
 \section{Level Easy}
-
+\subsection{ViewModel Projectsions}
 \begin{frame}{Projection (ViewModels)}
     \begin{onlyenv}<1>
         \lstinputlisting{resources/model.cs}
@@ -240,13 +241,14 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
         ORDER BY [t].[c], [t].[Id]
     \end{lstlisting}
 \end{frame}
-
+\subsection{à la C\# Triggers}
 \begin{frame}{C\# Triggers}
     \lstinputlisting[firstline=47, lastline=59]{../EF.Experiments/EF.Experiments.Data/BloggingContext.cs}
     \pause
     Don't forget to override Async verion of SaveChanges on EF Core.
 
 \end{frame}
+\subsection{Object Tracking}
 \begin{frame}{Object Tracking}
     \lstinputlisting[firstline=29, lastline=31]{../EF.Experiments/EF.Experiments/Program.cs}
     \pause
@@ -262,6 +264,7 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
 \end{frame}
 
 \section{Medium Level}
+\subsection{Avoiding N+1 Problem}
 \begin{frame}{Tracking N+1 Problem}
     \begin{alertblock}{N+1 Fallback}
         Unlike EF6, if EFC cannot translate expression it will execute it on client.
@@ -273,7 +276,7 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
                 .ConfigureWarnings(wartings => wartings.Throw());
     \end{exampleblock}
 \end{frame}
-
+\subsection{Pattern Specification}
 \begin{frame}[fragile]{Pattern Specification}
     \begin{exampleblock}{Specification}
         In computer programming, the specification pattern is a particular software design pattern, whereby business rules can be recombined by chaining the business rules together using boolean logic. 
@@ -304,6 +307,7 @@ context.Posts.Where(new LastPosts(10).ToExpression())
     \end{itemize}
 \end{frame}
 \section{Advanced}
+\subsection{Advanced Pattern Specification}
 \begin{frame}{But Specification Pattern says they should be capable of chaining}
     \includegraphics[scale=0.8]{images/But.png}
 \end{frame}

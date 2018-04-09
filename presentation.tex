@@ -2,6 +2,8 @@
 \input{cslistings.tex}
 \usepackage{geometry}
 \usepackage{tikz}
+\usepackage{hyperref}
+
 \newcommand{\imagefolder}{../EF.Experiments/EF.Experiments.Data/Specifications/Specification.cs}
 \tikzset{
     invisible/.style={opacity=0},
@@ -404,7 +406,7 @@ context.Posts.Where(new LastPosts(10).ToExpression())
         }
     \end{enumerate}
 \end{frame}
-\begin{frame}[fragile]{CONTAINS Operator Implementaion}
+\begin{frame}[fragile]{CONTAINS Operator Implementaion (Translator)}
     \begin{lstlisting}
 public class FreeTextTranslator : IMethodCallTranslator
 {
@@ -425,5 +427,54 @@ public class FreeTextTranslator : IMethodCallTranslator
     }
 }
     \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{CONTAINS Operator Implementaion (Appending to DI pipeline)}
+    \begin{lstlisting}
+public class CustomSqlMethodCallTranslator : SqlServerCompositeMethodCallTranslator
+{
+    public CustomSqlMethodCallTranslator(RelationalCompositeMethodCallTranslatorDependencies dependencies) : base(dependencies)
+    {
+        // ReSharper disable once VirtualMemberCallInConstructor
+        AddTranslators(new [] {new FreeTextTranslator() });
+    }
+}
+    \end{lstlisting}
+    \href{https://github.com/aspnet/EntityFrameworkCore/blob/dev/src/EFCore.SqlServer/Query/ExpressionTranslators/Internal/SqlServerCompositeMethodCallTranslator.cs}{SqlServerCompositeMethodCallTranslator.cs}
+    \href{https://github.com/aspnet/EntityFrameworkCore/blob/dev/src/EFCore.Relational/Query/ExpressionTranslators/RelationalCompositeMethodCallTranslator.cs\#L56}{RelationalCompositeMethodCallTranslator.cs}
+
+    \begin{lstlisting}
+optionsBuilder.ReplaceService<ICompositeMethodCallTranslator, CustomSqlMethodCallTranslator>();
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Problems with boolean function}
+    \begin{block}{}
+        Because of this \href{https://github.com/aspnet/EntityFrameworkCore/issues/11316}{\#11316} and that \href{https://github.com/aspnet/EntityFrameworkCore/issues/9143}{\#9143}
+        EFC does not recoginze bool type of SqlFunction (predicate) and produce invalid SQL
+    \end{block}
+    \begin{lstlisting}[language=SQL]
+    SELECT [x].[Id], [x].[AuthorId], [x].[BlogId], [x].[Content], [x].[Created], [x].[Rating], [x].[Title]
+        FROM [Posts] AS [x]
+        WHERE CONTAINS([x].[Content], N'some text') = 1
+    \end{lstlisting}
+\end{frame}
+\begin{frame}[fragile]{Fixing "= 1" Problem}
+    \lstinputlisting[firstline=7, lastline=25]{../EF.Experiments/EF.Experiments.Data/FreeTextSqlGenerator.cs}
+\end{frame}
+\section*{Final}
+\begin{frame}{Thank you for listening!}
+    Links:
+    \begin{itemize}
+        \item{
+            Project: \href{https://github.com/elepner/ef-experiments}{https://github.com/elepner/ef-experiments}
+        }
+        \item{
+            Presentation: \href{https://github.com/elepner/ef.presentation}{https://github.com/elepner/ef.presentation}
+        }
+        \item{
+            Entity Framework Core Project: \href{https://github.com/aspnet/EntityFrameworkCore}{https://github.com/aspnet/EntityFrameworkCore}
+        }
+    \end{itemize}
 \end{frame}
 \end{document}

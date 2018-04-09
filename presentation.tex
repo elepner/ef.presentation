@@ -149,13 +149,13 @@ var query2 = Queryable.Select(
     \lstinline{DbSet<T>} implements both \lstinline{IEnumerable<T>} and \lstinline{IQueryble<T>}.
     How does it know which \lstinline{Select, Where, FirstOrDefault} to use?
     \pause
-    \begin{exampleblock}{7.5.3.5 Better conversion target}
+    \begin{block}{7.5.3.5 Better conversion target}
         Given two different types T1 and T2, T1 is a better conversion target than T2 if at least one of the following holds:
         \begin{itemize}
             \item An implicit conversion from T1 to T2 exists, and no implicit conversion from T2 toT1 exists
             \item T1 is a signed integral type and T2 is an unsigned integral type.
         \end{itemize}
-    \end{exampleblock}
+    \end{block}
     \begin{exampleblock}{Lambda Expressions}
         A lambda expression is an anonymous function that you can use to create delegates or expression tree types. By using lambda expressions, you can write local functions that can be passed as arguments or returned as the value of function calls.
     \end{exampleblock}
@@ -165,9 +165,10 @@ var query2 = Queryable.Select(
     \begin{lstlisting}
 dbContext.Posts.Where(x => x.Content.StartsWith("Some") || x.Title.Length > 10).Select(x => new { x.Id, x.Title, x.Content })
     \end{lstlisting}
+    \pause
     \input{expression_tree.tex}
 \end{frame}
-
+\subsection*{Conclusions}
 \begin{frame}[fragile]{Conclusions}
     \begin{itemize}
         \item<1-> EF is not magic
@@ -278,9 +279,9 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
 \end{frame}
 \subsection{Pattern Specification}
 \begin{frame}[fragile]{Pattern Specification}
-    \begin{exampleblock}{Specification}
+    \begin{block}{Specification}
         In computer programming, the specification pattern is a particular software design pattern, whereby business rules can be recombined by chaining the business rules together using boolean logic. 
-    \end{exampleblock}
+    \end{block}
     \pause
     \begin{lstlisting}
         public interface ISpecification<T>
@@ -366,11 +367,63 @@ context.Posts.Where(new LastPosts(10).ToExpression())
         \lstinputlisting[firstline=32, lastline=35]{\imagefolder}
     }
     \only<3> {
-        \begin{exampleblock}{\href{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/expressions\#boolean-expressions}{Boolean operator overloading}}
+        \begin{block}{\href{https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/expressions\#boolean-expressions}{Boolean operator overloading}}
             In order to overloading operators \&\&, ||, ! one should overload operators true, false, \&, |
-        \end{exampleblock}
+        \end{block}
         CODE DEMO!
     }
+\end{frame}
+\subsection{EFC DI Model}
+\begin{frame}{DI in EFC}
+    \begin{itemize}[<+->]
+        \item EFC uses the same approach with IServiceCollection as ASP.NET Core does
+        \item One can replace any service with one's own implementstion using DbContextOptionsBuilder.ReplaceService
+        \item Extension methods like DbContextOptionsBuilder.Use...() set up necessary services like UseMvc() in AspNet.Core
+    \end{itemize}
+\end{frame}
+\begin{frame}{EFC DI Model Example}
+    One can look at example in \href{https://github.com/aspnet/EntityFrameworkCore/blob/dev/src/EFCore.SqlServer/Extensions/SqlServerServiceCollectionExtensions.cs}{SqlServerServiceCollectionExtensions.cs}
+    and \href{https://github.com/aspnet/EntityFrameworkCore/blob/dev/src/EFCore/Infrastructure/EntityFrameworkServicesBuilder.cs}{EntityFrameworkServicesBuilder.cs}.
 
+    They add about 100 services to IServiceCollection
+\end{frame}
+\subsection{Custom SQL Operator}
+\begin{frame}[fragile]{Implementing Custom SQL Operator}
+    \begin{enumerate}[<+->]
+        \item {
+            Goal: SQL Query like this:
+            \begin{lstlisting}[language=SQL]
+    SELECT * FROM Posts WHERE CONTAINS(content, N'some text')
+            \end{lstlisting}
+        }
+        \item {
+            Produced from like that:
+            \begin{lstlisting}[language=SQL]
+    dbContext.Posts.Where(x => !x.Content.ContainsText("some text"))
+            \end{lstlisting}
+        }
+    \end{enumerate}
+\end{frame}
+\begin{frame}[fragile]{CONTAINS Operator Implementaion}
+    \begin{lstlisting}
+public class FreeTextTranslator : IMethodCallTranslator
+{
+    private static readonly MethodInfo _methodInfo
+        = typeof(StringExt).GetRuntimeMethod(nameof(StringExt.ContainsText), new[] {typeof(string), typeof(string)});
+
+    public Expression Translate(MethodCallExpression methodCallExpression)
+    {
+        if (methodCallExpression.Method != _methodInfo) return null;
+
+        var patternExpression = methodCallExpression.Arguments[1];
+        var objectExpression = (ColumnExpression) methodCallExpression.Arguments[0];
+
+        var sqlExpression =
+            new SqlFunctionExpression("CONTAINS", typeof(bool),
+                new[] { objectExpression, patternExpression });
+        return sqlExpression;
+    }
+}
+    \end{lstlisting}
 \end{frame}
 \end{document}

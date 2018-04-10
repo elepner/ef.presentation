@@ -38,6 +38,7 @@
 
 \begin{document}
 
+
 \begin{frame}
   \titlepage
 \end{frame}
@@ -147,9 +148,16 @@ var query2 = Queryable.Select(
         \end{lstlisting}
     \end{onlyenv}
 \end{frame}
-\begin{frame}{IEnumerable<T> vs IQueryble<T>}
+\begin{frame}[fragile]{IEnumerable<T> vs IQueryble<T>}
+    \begin{lstlisting}
+ctx.Posts.Where(x => x.Title.StartsWith("C#"))
+    \end{lstlisting}
     \lstinline{DbSet<T>} implements both \lstinline{IEnumerable<T>} and \lstinline{IQueryble<T>}.
     How does it know which \lstinline{Select, Where, FirstOrDefault} to use?
+    \begin{lstlisting}
+public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, Expression<Func<TSource, bool>> predicate)
+public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
+    \end{lstlisting}
     \pause
     \begin{block}{7.5.3.5 Better conversion target}
         Given two different types T1 and T2, T1 is a better conversion target than T2 if at least one of the following holds:
@@ -159,7 +167,7 @@ var query2 = Queryable.Select(
         \end{itemize}
     \end{block}
     \begin{exampleblock}{Lambda Expressions}
-        A lambda expression is an anonymous function that you can use to create delegates or expression tree types. By using lambda expressions, you can write local functions that can be passed as arguments or returned as the value of function calls.
+        A lambda expression is an anonymous function that you can use to create delegates or expression tree types.
     \end{exampleblock}
 \end{frame}
 \subsection{Expression Parsing}

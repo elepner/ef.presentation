@@ -203,7 +203,6 @@ c.B = "B";
     \begin{onlyenv}<2>
         \lstinputlisting{resources/viewmodel.cs}
     \end{onlyenv}
-    
 \end{frame}
 
 \begin{frame}[fragile]{Projections}
@@ -253,7 +252,7 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
 \end{frame}
 \subsection{Object Tracking}
 \begin{frame}{Object Tracking}
-    \lstinputlisting[firstline=29, lastline=31]{../EF.Experiments/EF.Experiments/Program.cs}
+    \lstinputlisting[firstline=31, lastline=33]{../EF.Experiments/EF.Experiments/Program.cs}
     \pause
     \begin{exampleblock}{}
         True

@@ -99,9 +99,10 @@
         is an AST. Expression yields one value and AST may represent entire program
     \end{block}
     
-    \begin{alertblock}{Bingo!}
+    \begin{exampleblock}{Bingo!}
         Language A $\Rightarrow$ AST $\Rightarrow$ Language B
-    \end{alertblock}
+    \end{exampleblock}
+
 \end{frame}
 \subsection{C\# Language Primitives and Syntax Sugar}
 \begin{frame}[fragile]{Simple State}
@@ -153,7 +154,7 @@ var query2 = Queryable.Select(
 ctx.Posts.Where(x => x.Title.StartsWith("C#"))
     \end{lstlisting}
     \lstinline{DbSet<T>} implements both \lstinline{IEnumerable<T>} and \lstinline{IQueryble<T>}.
-    How does it know which \lstinline{Select, Where, FirstOrDefault} to use?
+    How does compiler know which method \lstinline{Select, Where, FirstOrDefault} to use?
     \begin{lstlisting}
 public static IQueryable<TSource> Where<TSource>(this IQueryable<TSource> source, Expression<Func<TSource, bool>> predicate)
 public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
@@ -275,10 +276,13 @@ var query = dbContext.Authors.Include(x => x.Posts).Select(x => new ViewModels.A
 
 \section{Medium Level}
 \subsection{Avoiding N+1 Problem}
-\begin{frame}{Tracking N+1 Problem}
+\begin{frame}[fragile]{Tracking N+1 Problem}
     \begin{alertblock}{N+1 Fallback}
         Unlike EF6, if EFC cannot translate expression it will execute it on client.
     \end{alertblock}
+    \begin{lstlisting}
+    ctx.Posts.Where(x=>x.Content.Reverse().Substring(1,3).Contains("Text"));
+    \end{lstlisting}
     \pause
     \begin{exampleblock}{Treat Warnings as Errors}
         optionsBuilder\\
@@ -340,7 +344,7 @@ context.Posts.Where(new LastPosts(10).ToExpression())
             \begin{lstlisting}
     ctx.Posts.ToArray().Where(
         new LastPosts(10) && new FromBlog(blogId) &&
-            (new ByAuthor(john) || new ByAuthor(Grzegosz))
+            (new ByAuthor(john) || new ByAuthor(grzegorz))
         )
             \end{lstlisting}
         }

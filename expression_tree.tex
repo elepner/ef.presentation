@@ -28,7 +28,10 @@
                 child[visible on=<8->]{
                     node (Gr) [operator] {>}[level distance=1cm, sibling distance=1.5cm]
                     child[visible on=<9->]{
-                        node(Prop)[leaf]{Property:Title}
+                        node(Prop)[func]{Prop:Length}
+                        child[visible on=<9->]{
+                            node(PropLength)[leaf]{Prop:Title}
+                        }
                     }
                     child[visible on=<10->]{
                         node(Prop)[leaf]{10}
